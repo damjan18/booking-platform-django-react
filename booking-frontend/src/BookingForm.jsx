@@ -34,14 +34,67 @@ function BookingForm({onSuccess}) {
 
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input name="full_name" placeholder="Ime i prezime" value={form.full_name} onChange={handleChange} required />
-            <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} required />
-            <input name="date_from" type="date" value={form.date_from} onChange={handleChange} required />
-            <input name="date_to" type="date" value={form.date_to} onChange={handleChange} required />
-            <button type="submit">Pošalji rezervaciju</button>
-        </form>
-    );
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 space-y-4"
+    >
+      <div>
+        <label className="block mb-1 font-medium">Ime i prezime</label>
+        <input
+          name="full_name"
+          placeholder="Ime i prezime"
+          value={form.full_name}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1 font-medium">Email</label>
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1 font-medium">Datum od</label>
+        <input
+          name="date_from"
+          type="date"
+          value={form.date_from}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1 font-medium">Datum do</label>
+        <input
+          name="date_to"
+          type="date"
+          value={form.date_to}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
+      >
+        Pošalji rezervaciju
+      </button>
+    </form>
+  );
 }
 
 export default BookingForm;
