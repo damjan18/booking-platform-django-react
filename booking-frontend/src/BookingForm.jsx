@@ -3,7 +3,7 @@ import axios from "axios";
 
 
 
-function BookingForm() {
+function BookingForm({onSuccess}) {
     const [form, setForm] = useState({
         full_name: "",
         email: "",
@@ -22,6 +22,10 @@ function BookingForm() {
         await axios.post("http://localhost:8000/api/bookings/", form);
         alert("Rezervacija uspjesno poslata");
         setForm({ full_name: "", email: "", date_from: "", date_to: "" });
+
+        if (onSuccess) {
+            onSuccess();
+        }
     } catch (error) {
         console.error("Greska pri slanju:", error);
         alert("Greska! Pokusaj ponovo.")
