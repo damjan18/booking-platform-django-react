@@ -11,12 +11,20 @@ function BookingForm({onSuccess}) {
         date_to: "",
     })
 
+
+    const [error, setError] = useState("")
+
     const handleChange = (e) => {
         setForm({...form, [e.target.name]: e.target.value})
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+    if (form.date_from && form.date_to && form.date_to < form.date_from) {
+      setError("Datum do ne moze biti pre datuma od.");
+      return
+    }
 
     try {
         await axios.post("http://localhost:8000/api/bookings/", form);
@@ -86,6 +94,10 @@ function BookingForm({onSuccess}) {
           className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+
+      {error && (
+        <p className="text-red-600 dark:text-red-400 text-sm font-medium">{error}</p>
+      )}
 
       <button
         type="submit"

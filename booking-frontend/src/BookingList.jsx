@@ -1,28 +1,34 @@
-import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
+import { useEffect, useState, forwardRef, useImperativeHandle, useCallback } from "react";
 import axios from "axios";
-
-
-
 
 const BookingList = forwardRef((props, ref) => {
   const [bookings, setBookings] = useState([]);
+  const [ascending, setAscending] = useState(true);
 
-  const fetchBookings = () => {
-    axios.get("http://localhost:8000/api/bookings/")
-      .then((res) => setBookings(res.data))
+  const fetchBookings = useCallback(() => {
+    axios
+      .get("http://localhost:8000/api/bookings/")
+      .then((res) => {
+        const sorted = res.data.sort((a, b) => {
+          const dateA = new Date(a.date_from);
+          const dateB = new Date(b.date_from);
+          return ascending ? dateA - dateB : dateB - dateA;
+        });
+        setBookings(sorted);
+      })
       .catch((err) => console.error("Greška:", err));
-  };
+  }, [ascending]);
 
   const deleteBooking = async (id) => {
-    const confirmDelete = window.confirm("Da li sigurno zelis da obrises ovu rezervaciju?")
+    const confirmDelete = window.confirm("Da li sigurno želiš da obrišeš ovu rezervaciju?");
     if (!confirmDelete) return;
 
     try {
       await axios.delete(`http://localhost:8000/api/bookings/${id}/`);
       fetchBookings();
     } catch (err) {
-      console.error("Greska pri brisanju:", err);
-      alert("Greska pri brisanju. Pokusaj ponovo.")
+      console.error("Greška pri brisanju:", err);
+      alert("Greška pri brisanju. Pokušaj ponovo.");
     }
   };
 
@@ -32,11 +38,23 @@ const BookingList = forwardRef((props, ref) => {
 
   useEffect(() => {
     fetchBookings();
-  }, []);
+  }, [fetchBookings]);
+
+  const handleToggle = () => {
+    setAscending((prev) => !prev);
+  };
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Postojeće rezervacije</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Postojeće rezervacije</h2>
+        <button
+          onClick={handleToggle}
+          className="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+        >
+          Sortiraj po datumu {ascending ? "▲" : "▼"}
+        </button>
+      </div>
 
       {bookings.length === 0 ? (
         <p className="text-gray-600 dark:text-gray-400">Nema rezervacija.</p>
@@ -49,7 +67,7 @@ const BookingList = forwardRef((props, ref) => {
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-lg font-semibold">{booking.full_name}</p>
+                  <p className="text-lg font-semibold text-gray-900 dark:text-white">{booking.full_name}</p>
                   <p className="text-sm text-gray-500 dark:text-gray-300">{booking.email}</p>
                   <p className="text-sm text-gray-700 dark:text-gray-200 mt-2">
                     <strong>Od:</strong> {booking.date_from} <br />
@@ -71,6 +89,5 @@ const BookingList = forwardRef((props, ref) => {
     </div>
   );
 });
-
 
 export default BookingList;
